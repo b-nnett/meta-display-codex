@@ -2,6 +2,8 @@
 
 Codex Ray-Ban is a SwiftUI iOS app for using Codex through Meta smart glasses. It connects to Meta Wearables DAT, launches a display app on the glasses, signs in to OpenAI/Codex remote control, and mirrors Codex chats, projects, pets, and voice input into the glasses UI.
 
+![Codex Ray-Ban glasses display showing the Codex home screen](docs/images/codex-rayban-display.png)
+
 ## What It Does
 
 - Registers and manages supported Meta smart glasses through Meta Wearables DAT.
