@@ -1,0 +1,2437 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=600, initial-scale=1" />
+    <title>Codex Display App</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #080808;
+        --surface: #f8f8f6;
+        --surface-2: #ececea;
+        --surface-3: #dededa;
+        --text: #151515;
+        --muted: #767676;
+        --faint: #a9a9a5;
+        --line: #d4d4d0;
+        --green: #2f8d45;
+        --red: #c74d58;
+        --blue: #1f6bc9;
+        --shadow: rgba(0, 0, 0, 0.18);
+        --pet-size: 142px;
+      }
+
+      body[data-theme="dark"] {
+        --surface: #f8f8f6;
+        --surface-2: #ececea;
+        --surface-3: #dededa;
+        --text: #151515;
+        --muted: #767676;
+        --faint: #a9a9a5;
+        --line: #d4d4d0;
+      }
+
+      body[data-theme="light"] {
+        --surface: #fffefa;
+        --surface-2: #efefeb;
+        --surface-3: #e4e4df;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      html,
+      body {
+        width: 600px;
+        height: 600px;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: var(--surface);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        font-size: 20px;
+        line-height: 1.25;
+      }
+
+      button,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        color: inherit;
+      }
+
+      .app {
+        position: relative;
+        width: 600px;
+        height: 600px;
+        overflow: hidden;
+        background: var(--surface);
+      }
+
+      .screen {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        align-items: stretch;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(8px);
+        transition:
+          opacity 160ms ease,
+          transform 160ms ease;
+      }
+
+      .screen.is-active {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+
+      .nav {
+        position: relative;
+        z-index: 3;
+        min-height: 88px;
+        display: grid;
+        grid-template-columns: 58px 1fr auto;
+        align-items: center;
+        gap: 12px;
+        padding: 24px 26px 10px;
+        background:
+          linear-gradient(
+            to bottom,
+            rgba(248, 248, 246, 0.96),
+            rgba(248, 248, 246, 0.78) 72%,
+            rgba(248, 248, 246, 0)
+          );
+      }
+
+      .nav-title {
+        min-width: 0;
+      }
+
+      .nav-title strong {
+        display: block;
+        overflow: hidden;
+        font-size: 24px;
+        font-weight: 710;
+        letter-spacing: 0;
+        line-height: 1.05;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .nav-title > span {
+        display: block;
+        overflow: hidden;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 16px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .icon-button {
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow:
+          0 8px 24px rgba(0, 0, 0, 0.08),
+          inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+        cursor: pointer;
+      }
+
+      .icon-button svg {
+        width: 25px;
+        height: 25px;
+      }
+
+      .toolbar-pill {
+        height: 54px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.78);
+        box-shadow:
+          0 8px 24px rgba(0, 0, 0, 0.08),
+          inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+      }
+
+      .small-icon-button {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .small-icon-button svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .content {
+        min-height: 0;
+        overflow: auto;
+        padding: 4px 26px 112px;
+        scrollbar-width: thin;
+      }
+
+      .home-grid {
+        display: grid;
+        gap: 22px;
+      }
+
+      .mode-switch {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        padding: 4px;
+        border-radius: 999px;
+        background: var(--surface-2);
+      }
+
+      .mode-switch button {
+        height: 42px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+      }
+
+      .mode-switch button[aria-pressed="true"] {
+        background: var(--surface);
+        color: var(--text);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      }
+
+      .section {
+        display: grid;
+        gap: 8px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 32px;
+      }
+
+      .section-header h2 {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+        font-weight: 650;
+        text-transform: uppercase;
+      }
+
+      .section-header button {
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .list {
+        display: grid;
+        gap: 1px;
+        overflow: hidden;
+        border-radius: 18px;
+        background: var(--line);
+      }
+
+      .row-button {
+        width: 100%;
+        min-height: 66px;
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 12px;
+        border: 0;
+        background: var(--surface-2);
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .row-button.compact {
+        min-height: 58px;
+      }
+
+      .row-wrap {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: stretch;
+        background: var(--surface-2);
+      }
+
+      .row-wrap .row-button {
+        background: transparent;
+      }
+
+      .row-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding-right: 10px;
+      }
+
+      .row-action {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+      }
+
+      .row-action svg {
+        width: 19px;
+        height: 19px;
+      }
+
+      .row-action.is-active {
+        color: var(--blue);
+      }
+
+      .row-button svg {
+        width: 24px;
+        height: 24px;
+        color: var(--muted);
+      }
+
+      .row-main {
+        min-width: 0;
+      }
+
+      .row-title {
+        display: block;
+        overflow: hidden;
+        font-size: 20px;
+        font-weight: 620;
+        line-height: 1.1;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .row-subtitle {
+        display: block;
+        overflow: hidden;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 15px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .row-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+        display: inline-block;
+        flex: 0 0 auto;
+        border-radius: 999px;
+        background: var(--faint);
+      }
+
+      .dot.connected {
+        background: #2abf55;
+      }
+
+      .dot.unread {
+        background: var(--blue);
+      }
+
+      .dot.running {
+        position: relative;
+        background: #8b8b86;
+      }
+
+      .dot.running::after {
+        content: "";
+        position: absolute;
+        inset: -5px;
+        border: 1px solid rgba(80, 80, 76, 0.34);
+        border-radius: inherit;
+        animation: pulse 1.2s ease-out infinite;
+      }
+
+      @keyframes pulse {
+        from {
+          opacity: 0.9;
+          transform: scale(0.7);
+        }
+
+        to {
+          opacity: 0;
+          transform: scale(1.6);
+        }
+      }
+
+      .chat-list {
+        display: grid;
+        gap: 16px;
+      }
+
+      .message {
+        display: grid;
+        gap: 8px;
+      }
+
+      .message.user {
+        justify-items: end;
+      }
+
+      .bubble {
+        max-width: 430px;
+        padding: 11px 14px;
+        border-radius: 18px;
+        background: var(--surface-2);
+        font-size: 18px;
+        line-height: 1.35;
+      }
+
+      .message.assistant .bubble {
+        max-width: none;
+        padding: 0;
+        border-radius: 0;
+        background: transparent;
+        font-size: 20px;
+      }
+
+      .markdown {
+        display: grid;
+        gap: 13px;
+        overflow-wrap: anywhere;
+      }
+
+      .markdown p {
+        margin: 0;
+        white-space: pre-wrap;
+      }
+
+      .markdown code {
+        padding: 0 4px;
+        border-radius: 5px;
+        background: var(--surface-2);
+        color: #7b7b78;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.92em;
+      }
+
+      .file-link {
+        display: inline;
+        padding: 0;
+        border: 0;
+        border-bottom: 1px dotted currentColor;
+        background: transparent;
+        color: var(--text);
+        font: inherit;
+        line-height: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .file-card {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: var(--surface-2);
+      }
+
+      .file-card-header,
+      .file-row {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 14px;
+        border: 0;
+        background: transparent;
+        text-align: left;
+      }
+
+      .file-card-header {
+        min-height: 58px;
+        padding: 0 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .file-card-header strong {
+        font-size: 20px;
+      }
+
+      .file-card-header svg {
+        width: 22px;
+        height: 22px;
+        color: var(--muted);
+        transition: transform 160ms ease;
+      }
+
+      .file-card.collapsed .file-card-header svg {
+        transform: rotate(-90deg);
+      }
+
+      .file-rows {
+        display: grid;
+      }
+
+      .file-card.collapsed .file-rows {
+        display: none;
+      }
+
+      .file-row {
+        min-height: 54px;
+        padding: 0 18px;
+        border-bottom: 1px solid var(--line);
+        cursor: pointer;
+      }
+
+      .file-row:last-child {
+        border-bottom: 0;
+      }
+
+      .file-path {
+        overflow: hidden;
+        color: #242424;
+        font-size: 17px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .counts {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 8px;
+        font-size: 20px;
+        font-weight: 680;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .plus {
+        color: var(--green);
+      }
+
+      .minus {
+        color: var(--red);
+      }
+
+      details.tool {
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: var(--surface-2);
+      }
+
+      details.tool summary {
+        cursor: pointer;
+        font-size: 17px;
+        font-weight: 650;
+      }
+
+      details.tool pre {
+        overflow: auto;
+        margin: 10px 0 0;
+        color: #64645f;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 13px;
+        white-space: pre-wrap;
+      }
+
+      .todo-list {
+        display: grid;
+        gap: 8px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: var(--surface-2);
+      }
+
+      .todo-item {
+        display: grid;
+        grid-template-columns: 18px 1fr;
+        gap: 9px;
+        color: #32322f;
+        font-size: 16px;
+      }
+
+      .todo-item.done {
+        color: var(--muted);
+        text-decoration: line-through;
+      }
+
+      .thinking-row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--muted);
+        font-size: 17px;
+      }
+
+      .history-button {
+        width: fit-content;
+        margin: 0 auto 2px;
+        padding: 6px 12px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--surface-2);
+        color: var(--muted);
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--line);
+        border-top-color: var(--muted);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .composer-wrap {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 7;
+        padding: 0 26px 22px;
+        pointer-events: none;
+      }
+
+      .composer {
+        pointer-events: auto;
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.16);
+        backdrop-filter: blur(18px);
+      }
+
+      .composer.collapsed {
+        height: 62px;
+        display: grid;
+        grid-template-columns: 44px 1fr 44px;
+        align-items: center;
+        gap: 8px;
+        padding: 0 16px;
+        border-radius: 999px;
+      }
+
+      .composer.expanded {
+        display: grid;
+        gap: 12px;
+        padding: 14px;
+        border-radius: 26px;
+      }
+
+      .composer-icon {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .composer-icon svg {
+        width: 25px;
+        height: 25px;
+      }
+
+      .composer-icon.is-recording {
+        background: rgba(255, 69, 58, 0.14);
+        color: #d82020;
+      }
+
+      .composer-placeholder {
+        overflow: hidden;
+        color: var(--muted);
+        font-size: 20px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: text;
+      }
+
+      .composer textarea {
+        width: 100%;
+        min-height: 50px;
+        max-height: 132px;
+        resize: none;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--text);
+        font-size: 18px;
+        line-height: 1.32;
+      }
+
+      .composer-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .model-button {
+        min-width: 0;
+        max-width: 250px;
+        height: 38px;
+        overflow: hidden;
+        border: 0;
+        background: transparent;
+        color: #4f4f4b;
+        font-size: 15px;
+        font-weight: 650;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      .send-button {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 999px;
+        background: #141414;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .send-button:disabled {
+        background: #d0d0cb;
+        cursor: default;
+      }
+
+      .stop-button {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 999px;
+        background: #141414;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .stop-button svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .transcript-preview {
+        display: none;
+        gap: 10px;
+        padding: 12px;
+        border-radius: 18px;
+        background: var(--surface-2);
+      }
+
+      .recording-preview {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 18px;
+        background: rgba(255, 69, 58, 0.11);
+        color: #2c1b1b;
+      }
+
+      .recording-status {
+        display: inline-flex;
+        align-items: center;
+        min-width: 0;
+        gap: 8px;
+        font-size: 16px;
+        font-weight: 650;
+      }
+
+      .recording-dot {
+        width: 9px;
+        height: 9px;
+        flex: 0 0 auto;
+        border-radius: 999px;
+        background: #ff3b30;
+        box-shadow: 0 0 0 5px rgba(255, 59, 48, 0.14);
+      }
+
+      .transcript-preview.is-visible {
+        display: grid;
+      }
+
+      .transcript-preview p {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.32;
+      }
+
+      .preview-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .preview-actions button {
+        height: 34px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--surface);
+        color: #333;
+        font-size: 15px;
+        cursor: pointer;
+      }
+
+      .preview-actions .primary {
+        background: #151515;
+        color: #fff;
+      }
+
+      .sheet-backdrop {
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        display: none;
+        background: rgba(0, 0, 0, 0.12);
+      }
+
+      .sheet-backdrop.is-visible {
+        display: block;
+      }
+
+      .sheet {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 21;
+        height: 310px;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        padding: 14px 20px 20px;
+        border-radius: 28px 28px 0 0;
+        background: rgba(248, 248, 246, 0.96);
+        box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.18);
+        transform: translateY(104%);
+        transition: transform 180ms ease;
+      }
+
+      .sheet.is-visible {
+        transform: translateY(0);
+      }
+
+      .sheet-grabber {
+        width: 44px;
+        height: 5px;
+        margin: 0 auto 12px;
+        border-radius: 999px;
+        background: #d4d4cf;
+      }
+
+      .sheet-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 42px;
+        align-items: start;
+        gap: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .sheet-title {
+        overflow: hidden;
+        font-size: 18px;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .sheet-path {
+        overflow: hidden;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .sheet-body {
+        min-height: 0;
+        overflow: auto;
+        padding-top: 12px;
+      }
+
+      .diff-summary {
+        display: inline-flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        font-size: 17px;
+        font-weight: 700;
+      }
+
+      .preview-code {
+        margin: 0;
+        color: #4f4f4b;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 13px;
+        line-height: 1.42;
+        white-space: pre-wrap;
+      }
+
+      .unsupported-preview {
+        margin: 0;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.35;
+      }
+
+      .pet-screen {
+        grid-template-rows: 1fr;
+        place-items: stretch;
+        background: #050505;
+      }
+
+      .pet-controls {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        z-index: 4;
+        display: flex;
+        gap: 10px;
+      }
+
+      .pet-controls .icon-button {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.09);
+        color: #fff;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+      }
+
+      .pet-stage {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        width: 100%;
+        height: 100%;
+        padding: 96px 32px 54px;
+        overflow: hidden;
+      }
+
+      .pet-bubble {
+        position: relative;
+        z-index: 2;
+        max-width: min(360px, calc(100% - 64px));
+        margin-bottom: 14px;
+        padding: 13px 18px 14px;
+        border-radius: 22px;
+        background: rgba(247, 247, 247, 0.98);
+        color: #151515;
+        font-size: 19px;
+        font-weight: 500;
+        line-height: 1.25;
+        text-align: center;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+      }
+
+      .pet-bubble[hidden] {
+        display: none;
+      }
+
+      .pet-bubble-text {
+        display: -webkit-box;
+        overflow: hidden;
+        white-space: pre-wrap;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      .pet-bubble[data-expanded="true"] .pet-bubble-text {
+        display: block;
+        overflow: visible;
+        -webkit-line-clamp: initial;
+      }
+
+      .pet-bubble-toggle {
+        margin-top: 7px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--blue);
+        font: inherit;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .pet-bubble-toggle[hidden] {
+        display: none;
+      }
+
+      .pet-bubble::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -13px;
+        width: 0;
+        height: 0;
+        border-left: 11px solid transparent;
+        border-right: 11px solid transparent;
+        border-top: 14px solid rgba(247, 247, 247, 0.98);
+        filter: drop-shadow(0 7px 4px rgba(0, 0, 0, 0.18));
+        transform: translateX(-50%);
+      }
+
+      .pet-sprite {
+        width: var(--pet-size);
+        height: var(--pet-size);
+        overflow: hidden;
+        filter:
+          drop-shadow(0 24px 26px rgba(0, 0, 0, 0.58))
+          drop-shadow(0 0 34px rgba(255, 184, 72, 0.16));
+        transform: scale(1.36);
+        transform-origin: center bottom;
+      }
+
+      .pet-sprite img {
+        width: calc(var(--pet-size) * 8);
+        height: calc(var(--pet-size) * 9);
+        display: block;
+        image-rendering: pixelated;
+        transform: translate(
+          calc(var(--pet-col, 0) * var(--pet-size) * -1),
+          calc(var(--pet-row, 0) * var(--pet-size) * -1)
+        );
+      }
+
+      .empty {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        min-height: 0;
+        padding: 12px 0;
+        color: var(--muted);
+        font-size: 18px;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body data-theme="dark">
+    <main class="app" id="app">
+      <section class="screen is-active" id="homeScreen" aria-label="Codex home">
+        <header class="nav">
+          <button class="icon-button" type="button" data-action="new-chat" aria-label="New chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 5v14" />
+              <path d="M5 12h14" />
+            </svg>
+          </button>
+          <div class="nav-title">
+            <strong>Codex</strong>
+            <span><span class="dot connected"></span> <span data-host-name></span></span>
+          </div>
+          <div class="toolbar-pill" aria-label="Actions">
+            <button class="small-icon-button" type="button" data-action="show-pet" aria-label="Pet mode">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M8.6 10.2h.01" />
+                <path d="M15.4 10.2h.01" />
+                <path d="M8.8 15c1.7 1.2 4.7 1.2 6.4 0" />
+              </svg>
+            </button>
+            <button class="small-icon-button" type="button" data-action="more" aria-label="More">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <circle cx="5" cy="12" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="19" cy="12" r="2" />
+              </svg>
+            </button>
+          </div>
+        </header>
+        <div class="content home-grid">
+          <nav class="mode-switch" aria-label="Display mode">
+            <button type="button" data-action="show-work" aria-pressed="true">Work</button>
+            <button type="button" data-action="show-pet" aria-pressed="false">Pet</button>
+          </nav>
+
+          <section class="section" id="pinnedSection" aria-labelledby="pinnedLabel" hidden>
+            <div class="section-header">
+              <h2 id="pinnedLabel">Pinned</h2>
+              <button type="button" data-action="toggle-pinned" id="showMorePinned">Show all</button>
+            </div>
+            <div class="list" id="pinnedList"></div>
+          </section>
+
+          <section class="section" aria-labelledby="projectsLabel">
+            <div class="section-header">
+              <h2 id="projectsLabel">Projects</h2>
+              <button type="button" data-action="toggle-projects" id="showMoreProjects">Show all</button>
+            </div>
+            <div class="list" id="projectList"></div>
+          </section>
+
+          <section class="section" aria-labelledby="chatsLabel">
+            <div class="section-header">
+              <h2 id="chatsLabel">Recent chats</h2>
+              <button type="button" data-action="toggle-chats" id="showMoreChats">Show more</button>
+            </div>
+            <div class="list" id="chatList"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen" id="projectScreen" aria-label="Project chats">
+        <header class="nav">
+          <button class="icon-button" type="button" data-action="back-home" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <div class="nav-title">
+            <strong id="projectTitle">Project</strong>
+            <span id="projectSubtitle"></span>
+          </div>
+          <button class="icon-button" type="button" data-action="new-chat" aria-label="New chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 5v14" />
+              <path d="M5 12h14" />
+            </svg>
+          </button>
+        </header>
+        <div class="content">
+          <section class="section" aria-labelledby="projectChatsLabel">
+            <div class="section-header">
+              <h2 id="projectChatsLabel">Chats</h2>
+              <button type="button" data-action="toggle-project-chats" id="showMoreProjectChats">Show all</button>
+            </div>
+            <div class="list" id="projectChatList"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen" id="chatScreen" aria-label="Chat">
+        <header class="nav">
+          <button class="icon-button" type="button" data-action="back-from-chat" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <div class="nav-title">
+            <strong id="chatTitle">New chat</strong>
+            <span id="chatSubtitle"></span>
+          </div>
+          <div class="toolbar-pill" aria-label="Chat actions">
+            <button class="small-icon-button" type="button" data-action="new-chat" aria-label="New chat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+              </svg>
+            </button>
+            <button class="small-icon-button" type="button" data-action="show-pet" aria-label="Pet mode">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M8.6 10.2h.01" />
+                <path d="M15.4 10.2h.01" />
+                <path d="M8.8 15c1.7 1.2 4.7 1.2 6.4 0" />
+              </svg>
+            </button>
+          </div>
+        </header>
+        <div class="content" id="chatContent">
+          <div class="chat-list" id="messageList"></div>
+        </div>
+      </section>
+
+      <section class="screen pet-screen" id="petScreen" aria-label="Pet mode">
+        <div class="pet-controls">
+          <button class="icon-button" type="button" data-action="show-work" aria-label="Work mode">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 7h16" />
+              <path d="M4 12h16" />
+              <path d="M4 17h10" />
+            </svg>
+          </button>
+        </div>
+        <div class="pet-stage">
+          <div class="pet-bubble" id="petBubble" hidden>
+            <span class="pet-bubble-text" id="petBubbleText"></span>
+            <button class="pet-bubble-toggle" id="petBubbleToggle" type="button" data-action="toggle-pet-bubble" hidden>More</button>
+          </div>
+          <div class="pet-sprite" aria-hidden="true">
+            <img id="petSprite" alt="" src="CodexRayBan/Assets.xcassets/fireball-spritesheet-v4.imageset/fireball-spritesheet-v4.png" />
+          </div>
+        </div>
+      </section>
+
+      <div class="composer-wrap" id="composerWrap">
+        <div class="composer collapsed" id="composer">
+          <button class="composer-icon" type="button" aria-label="Add attachment">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+              <path d="M12 5v14" />
+              <path d="M5 12h14" />
+            </svg>
+          </button>
+          <div class="composer-placeholder" id="composerPlaceholder" role="button" tabindex="0">Ask Codex</div>
+          <button class="composer-icon" type="button" data-action="voice-preview" aria-label="Dictate">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+              <path d="M12 18v3" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="sheet-backdrop" id="sheetBackdrop"></div>
+      <aside class="sheet" id="fileSheet" aria-label="File preview">
+        <div>
+          <div class="sheet-grabber"></div>
+          <div class="sheet-header">
+            <div>
+              <div class="sheet-title" id="sheetTitle"></div>
+              <div class="sheet-path" id="sheetPath"></div>
+            </div>
+            <button class="small-icon-button" type="button" data-action="close-sheet" aria-label="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
+                <path d="M6 6l12 12" />
+                <path d="M18 6 6 18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="sheet-body" id="sheetBody"></div>
+      </aside>
+    </main>
+
+    <script>
+      const icons = {
+        folder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H9l2 2h8.5A2.5 2.5 0 0 1 22 9.5v8A2.5 2.5 0 0 1 19.5 20h-15A2.5 2.5 0 0 1 2 17.5v-10Z"/></svg>',
+        chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>',
+        fileChevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
+        pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5"/><path d="M8 3h8l-1 7 3 3v2H6v-2l3-3Z"/></svg>',
+        archive: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M5 7l1 14h12l1-14"/><path d="M9 11h6"/><path d="M8 7l1-4h6l1 4"/></svg>',
+        stop: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>'
+      };
+
+      const sampleState = {
+        schemaVersion: 1,
+        host: {
+          id: "env_e_6a06e6e50a84832e8599c90373d3d131",
+          name: "Example Mac",
+          connected: true
+        },
+        screen: "home",
+        mode: "work",
+        selectedProjectId: "cdp",
+        selectedChatId: "chat-cdp-status",
+        showAllPinnedChats: false,
+        showAllChats: false,
+        showAllProjects: false,
+        showAllProjectChats: false,
+        showAllMessages: false,
+        petBubbleExpanded: false,
+        composerExpanded: false,
+        draft: "",
+        transcriptPreview: "",
+        hasOlderMessages: true,
+        models: [
+          { id: "gpt-5.5", name: "GPT-5.5", detail: "Default Codex model", isDefault: true },
+          { id: "gpt-5-codex", name: "GPT-5 Codex", detail: "Codex coding model", isDefault: false }
+        ],
+        selectedModelId: "gpt-5.5",
+        selectedFile: null,
+        pet: {
+          id: "fireball",
+          name: "Fireball",
+          state: "idle",
+          bubble: "Ready.",
+          imageURI: "CodexRayBan/Assets.xcassets/fireball-spritesheet-v4.imageset/fireball-spritesheet-v4.png"
+        },
+        projects: [
+          {
+            id: "cdp",
+            name: "Chromium memory pressure",
+            path: "/Users/example/Documents/sidebar-cdp",
+            unread: true,
+            active: true,
+            chats: ["chat-cdp-status", "chat-cdp-followup"]
+          },
+          {
+            id: "meta",
+            name: "meta-display-codex",
+            path: "/Users/example/Documents/meta-display-codex",
+            unread: false,
+            active: false,
+            chats: ["chat-display-app"]
+          },
+          {
+            id: "watch",
+            name: "codex-apple-watch",
+            path: "/Users/example/Documents/codex-apple-watch",
+            unread: false,
+            active: false,
+            chats: ["chat-watch-voice"]
+          }
+        ],
+        chats: [
+          {
+            id: "chat-cdp-status",
+            title: "Check CDP status",
+            projectId: "cdp",
+            projectName: "Chromium memory pressure",
+            updated: "now",
+            unread: true,
+            active: true,
+            pinned: false
+          },
+          {
+            id: "chat-display-app",
+            title: "Build Meta display app",
+            projectId: "meta",
+            projectName: "meta-display-codex",
+            updated: "8m",
+            unread: false,
+            active: false,
+            pinned: false
+          },
+          {
+            id: "chat-cdp-followup",
+            title: "Repro sidebar focus burst",
+            projectId: "cdp",
+            projectName: "Chromium memory pressure",
+            updated: "22m",
+            unread: false,
+            active: false,
+            pinned: false
+          },
+          {
+            id: "chat-watch-voice",
+            title: "Watch dictation route",
+            projectId: "watch",
+            projectName: "codex-apple-watch",
+            updated: "1h",
+            unread: false,
+            active: false,
+            pinned: false
+          },
+          {
+            id: "chat-loose",
+            title: "Quick shell helper",
+            projectId: null,
+            projectName: "No project",
+            updated: "2h",
+            unread: false,
+            active: false,
+            pinned: false
+          },
+          {
+            id: "chat-loose-2",
+            title: "Remote API pagination notes",
+            projectId: null,
+            projectName: "No project",
+            updated: "3h",
+            unread: false,
+            active: false,
+            pinned: false
+          }
+        ],
+        messagesByChat: {
+          "chat-cdp-status": [
+            {
+              id: "m1",
+              role: "assistant",
+              parts: [
+                {
+                  type: "text",
+                  text: "Continued the repro work. No solid reproduction yet.\n\nI added a targeted harness path so native background/focus dwell can run immediately after the full Settings page opens, not just before the sequence: repro-sidebar-crumble.mjs."
+                },
+                {
+                  type: "fileGroup",
+                  status: "changed",
+                  files: [
+                    {
+                      path: "sidebar-crumbling/run-exact-sidebar-uptime-retest.sh",
+                      added: 30,
+                      removed: 0,
+                      diff: "+#!/usr/bin/env bash\n+set -euo pipefail\n+node ./scripts/repro-sidebar-crumble.mjs --trace-width burst\n+node ./scripts/check-cdp-status.mjs --after-settings"
+                    },
+                    {
+                      path: "sidebar-crumbling/repro-notes.md",
+                      added: 19,
+                      removed: 0,
+                      diff: "+## New disposable run\n+\n+sidebar-focus-after-settings-tracewidth-burst-1\n+\n+Result: checked: 78, raw suspect: true, stableSuspect: false"
+                    },
+                    {
+                      path: "sidebar-crumbling/sidebar-hypothesis-report.md",
+                      added: 10,
+                      removed: 0,
+                      diff: "+The memory gap is native and likely below JS heap.\n+Keep approval-gated steps away from live desktop sessions."
+                    }
+                  ]
+                },
+                {
+                  type: "text",
+                  text: "New disposable run:\nsidebar-focus-after-settings-tracewidth-burst-1\n\nResult: `checked: 78`, `raw suspect: true`, but `stableSuspect: false`."
+                }
+              ]
+            },
+            {
+              id: "m2",
+              role: "user",
+              parts: [
+                {
+                  type: "text",
+                  text: "Keep going and tell me what still needs proving."
+                }
+              ]
+            },
+            {
+              id: "m3",
+              role: "assistant",
+              streaming: true,
+              parts: [
+                {
+                  type: "tool",
+                  name: "run check",
+                  status: "running",
+                  detail: "Checking two newer natural-age memory-pressure runs and comparing CDP renderer counts."
+                },
+                {
+                  type: "todo",
+                  items: [
+                    { title: "Compare renderer count before Settings opens", done: true },
+                    { title: "Run after native focus dwell", done: true },
+                    { title: "Confirm whether the gap reproduces twice", done: false }
+                  ]
+                }
+              ]
+            }
+          ],
+          "chat-display-app": [
+            {
+              id: "d1",
+              role: "assistant",
+              parts: [
+                {
+                  type: "text",
+                  text: "The display app now has work mode, pet mode, project navigation, chat navigation, file preview sheets, and a minimized composer that expands only while active."
+                }
+              ]
+            }
+          ]
+        }
+      };
+
+      const state = structuredClone(sampleState);
+      const screens = {
+        home: document.querySelector("#homeScreen"),
+        project: document.querySelector("#projectScreen"),
+        chat: document.querySelector("#chatScreen"),
+        pet: document.querySelector("#petScreen")
+      };
+      const composerWrap = document.querySelector("#composerWrap");
+      const composer = document.querySelector("#composer");
+      const messageList = document.querySelector("#messageList");
+      const chatContent = document.querySelector("#chatContent");
+      const petSprite = document.querySelector("#petSprite");
+      const petBubble = document.querySelector("#petBubble");
+      const petBubbleText = document.querySelector("#petBubbleText");
+      const petBubbleToggle = document.querySelector("#petBubbleToggle");
+      const fileSheet = document.querySelector("#fileSheet");
+      const sheetBackdrop = document.querySelector("#sheetBackdrop");
+      const sheetBody = document.querySelector("#sheetBody");
+      const sheetTitle = document.querySelector("#sheetTitle");
+      const sheetPath = document.querySelector("#sheetPath");
+      let currentScreen = "home";
+      let previousScreen = "home";
+      let collapsedFileGroups = new Set();
+      let petTimer = null;
+      let petFrameIndex = 0;
+
+      const petAnimations = {
+        idle: [
+          [0, 0, 1680],
+          [0, 1, 660],
+          [0, 2, 660],
+          [0, 3, 840],
+          [0, 4, 840],
+          [0, 5, 1920]
+        ],
+        running: [
+          [7, 0, 120],
+          [7, 1, 120],
+          [7, 2, 120],
+          [7, 3, 120],
+          [7, 4, 120],
+          [7, 5, 220]
+        ],
+        thinking: [
+          [7, 0, 120],
+          [7, 1, 120],
+          [7, 2, 120],
+          [7, 3, 120],
+          [7, 4, 120],
+          [7, 5, 220]
+        ],
+        waiting: [
+          [6, 0, 150],
+          [6, 1, 150],
+          [6, 2, 150],
+          [6, 3, 150],
+          [6, 4, 150],
+          [6, 5, 260]
+        ],
+        review: [
+          [8, 0, 150],
+          [8, 1, 150],
+          [8, 2, 150],
+          [8, 3, 150],
+          [8, 4, 150],
+          [8, 5, 280]
+        ],
+        failed: [
+          [5, 0, 140],
+          [5, 1, 140],
+          [5, 2, 140],
+          [5, 3, 140],
+          [5, 4, 140],
+          [5, 5, 140],
+          [5, 6, 140],
+          [5, 7, 240]
+        ],
+        recording: [
+          [4, 0, 140],
+          [4, 1, 140],
+          [4, 2, 140],
+          [4, 3, 140],
+          [4, 4, 280]
+        ]
+      };
+
+      function escapeHTML(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function currentChat() {
+        return state.chats.find((chat) => chat.id === state.selectedChatId) || null;
+      }
+
+      function selectedProject() {
+        return state.projects.find((project) => project.id === state.selectedProjectId) || state.projects[0];
+      }
+
+      function messagesFor(chatId) {
+        return chatId ? state.messagesByChat[chatId] || [] : [];
+      }
+
+      function isNativeBridge() {
+        return window.CodexDisplayNativeBridge === true;
+      }
+
+      function currentChatIsStreaming() {
+        const chat = currentChat();
+        return Boolean(
+          chat?.active ||
+          messagesFor(chat?.id).some((message) => message.streaming) ||
+          state.pet.state === "running" ||
+          state.pet.state === "thinking"
+        );
+      }
+
+      function selectedModel() {
+        return state.models.find((model) => model.id === state.selectedModelId) || state.models[0];
+      }
+
+      function selectedModelLabel() {
+        const model = selectedModel();
+        return model ? model.name : "Model";
+      }
+
+      function render() {
+        document.querySelectorAll("[data-host-name]").forEach((node) => {
+          node.textContent = state.host.name || "No host";
+        });
+
+        renderHome();
+        renderProject();
+        renderChat();
+        renderComposer();
+        renderPet();
+      }
+
+      function showScreen(name) {
+        if (currentScreen !== name) {
+          previousScreen = currentScreen;
+        }
+        currentScreen = name;
+        Object.entries(screens).forEach(([key, screen]) => {
+          screen.classList.toggle("is-active", key === name);
+        });
+        composerWrap.style.display = name === "chat" ? "block" : "none";
+        if (name === "pet") {
+          startPetAnimation();
+        } else {
+          stopPetAnimation();
+        }
+      }
+
+      function renderHome() {
+        document.querySelectorAll("[data-action='show-work']").forEach((button) => {
+          button.setAttribute("aria-pressed", currentScreen !== "pet" ? "true" : "false");
+        });
+        document.querySelectorAll("[data-action='show-pet']").forEach((button) => {
+          button.setAttribute("aria-pressed", currentScreen === "pet" ? "true" : "false");
+        });
+
+        const pinnedChats = state.chats.filter((chat) => chat.pinned);
+        const visiblePinnedChats = state.showAllPinnedChats ? pinnedChats : pinnedChats.slice(0, 3);
+        const pinnedSection = document.querySelector("#pinnedSection");
+        const showMorePinned = document.querySelector("#showMorePinned");
+        pinnedSection.hidden = pinnedChats.length === 0;
+        showMorePinned.hidden = pinnedChats.length <= 3;
+        showMorePinned.textContent = state.showAllPinnedChats ? "Show fewer" : "Show all";
+        document.querySelector("#pinnedList").innerHTML = visiblePinnedChats.map(chatRowHTML).join("");
+
+        const visibleProjects = state.showAllProjects ? state.projects : state.projects.slice(0, 5);
+        const showMoreProjects = document.querySelector("#showMoreProjects");
+        showMoreProjects.hidden = state.projects.length <= 5;
+        showMoreProjects.textContent = state.showAllProjects ? "Show fewer" : "Show all";
+
+        const projectList = document.querySelector("#projectList");
+        projectList.innerHTML = visibleProjects.map((project) => {
+          const chatCount = project.chats.length;
+          const activityDot = project.active
+            ? '<span class="dot running" aria-label="Active"></span>'
+            : project.unread
+              ? '<span class="dot unread" aria-label="Unread"></span>'
+              : "";
+          return `
+            <button class="row-button" type="button" data-project-id="${escapeHTML(project.id)}">
+              ${icons.folder}
+              <span class="row-main">
+                <span class="row-title">${escapeHTML(project.name)}</span>
+                <span class="row-subtitle">${escapeHTML(project.path || "No path")}</span>
+              </span>
+              <span class="row-meta">${activityDot}<span>${chatCount}</span>${icons.chevron}</span>
+            </button>
+          `;
+        }).join("");
+
+        const source = state.chats.filter((chat) => !chat.projectId && !chat.pinned);
+        const visibleChats = state.showAllChats ? source : source.slice(0, 5);
+        const showMore = document.querySelector("#showMoreChats");
+        showMore.hidden = source.length <= 5;
+        showMore.textContent = state.showAllChats ? "Show less" : "Show more";
+
+        document.querySelector("#chatList").innerHTML = visibleChats.map(chatRowHTML).join("") || '<div class="empty">No recent chats</div>';
+      }
+
+      function renderProject() {
+        const project = selectedProject();
+        if (!project) return;
+
+        document.querySelector("#projectTitle").textContent = project.name;
+        document.querySelector("#projectSubtitle").textContent = project.path;
+        const chats = state.chats.filter((chat) => project.chats.includes(chat.id));
+        const visibleChats = state.showAllProjectChats ? chats : chats.slice(0, 7);
+        const showMoreProjectChats = document.querySelector("#showMoreProjectChats");
+        showMoreProjectChats.hidden = chats.length <= 7;
+        showMoreProjectChats.textContent = state.showAllProjectChats ? "Show fewer" : "Show all";
+        document.querySelector("#projectChatList").innerHTML = visibleChats.map(chatRowHTML).join("") || '<div class="empty">No chats in this project yet</div>';
+      }
+
+      function chatRowHTML(chat) {
+        const dot = chat.active
+          ? '<span class="dot running" aria-label="Active"></span>'
+          : chat.unread
+            ? '<span class="dot unread" aria-label="Unread"></span>'
+            : "";
+        return `
+          <div class="row-wrap">
+            <button class="row-button compact" type="button" data-chat-id="${escapeHTML(chat.id)}">
+              <span></span>
+              <span class="row-main">
+                <span class="row-title">${escapeHTML(chat.title)}</span>
+              </span>
+              <span class="row-meta">${dot}<span>${escapeHTML(chat.updated)}</span>${icons.chevron}</span>
+            </button>
+            <span class="row-actions">
+              <button class="row-action ${chat.pinned ? "is-active" : ""}" type="button" data-action="toggle-pin" data-chat-action-id="${escapeHTML(chat.id)}" aria-label="${chat.pinned ? "Unpin chat" : "Pin chat"}">${icons.pin}</button>
+              <button class="row-action" type="button" data-action="archive-chat" data-chat-action-id="${escapeHTML(chat.id)}" aria-label="Archive chat">${icons.archive}</button>
+            </span>
+          </div>
+        `;
+      }
+
+      function renderChat() {
+        const chat = currentChat();
+        document.querySelector("#chatTitle").textContent = chat?.title || "New chat";
+        document.querySelector("#chatSubtitle").textContent = [chat?.projectName, state.host.name].filter(Boolean).join(" - ");
+        const messages = messagesFor(chat?.id);
+        messageList.innerHTML = "";
+        if (chat && state.hasOlderMessages) {
+          const olderButton = document.createElement("button");
+          olderButton.type = "button";
+          olderButton.className = "history-button";
+          olderButton.dataset.action = "load-older";
+          olderButton.textContent = "Previous messages";
+          messageList.appendChild(olderButton);
+        }
+        if (!messages.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = "Ask Codex to start this chat";
+          messageList.appendChild(empty);
+          return;
+        }
+
+        messages.forEach((message) => {
+          messageList.appendChild(renderMessage(message, chat));
+        });
+        if (messages.some((message) => message.streaming)) {
+          const row = document.createElement("div");
+          row.className = "thinking-row";
+          row.innerHTML = '<span class="spinner"></span><span>Working</span>';
+          messageList.appendChild(row);
+        }
+      }
+
+      function renderMessage(message, chat) {
+        const node = document.createElement("article");
+        node.className = `message ${message.role}`;
+        message.parts.forEach((part, index) => {
+          if (part.type === "text") {
+            const bubble = document.createElement("div");
+            bubble.className = "bubble";
+            const markdown = document.createElement("div");
+            markdown.className = "markdown";
+            renderMarkdown(markdown, part.text);
+            bubble.appendChild(markdown);
+            node.appendChild(bubble);
+          } else if (part.type === "fileGroup") {
+            node.appendChild(renderFileGroup(part, chat, index));
+          } else if (part.type === "file") {
+            node.appendChild(renderSingleFile(part));
+          } else if (part.type === "reasoning") {
+            const details = document.createElement("details");
+            details.className = "tool";
+            details.innerHTML = `<summary>Thinking</summary><pre>${escapeHTML(part.text || "")}</pre>`;
+            node.appendChild(details);
+          } else if (part.type === "tool") {
+            const details = document.createElement("details");
+            details.className = "tool";
+            details.open = part.status === "running";
+            details.innerHTML = `<summary>${escapeHTML(part.name)} ${escapeHTML(part.status || "")}</summary><pre>${escapeHTML(part.detail || "")}</pre>`;
+            node.appendChild(details);
+          } else if (part.type === "todo") {
+            const list = document.createElement("div");
+            list.className = "todo-list";
+            list.innerHTML = part.items.map((item) => `
+              <div class="todo-item ${item.done ? "done" : ""}">
+                <span>${item.done ? "[x]" : "[ ]"}</span>
+                <span>${escapeHTML(item.title)}</span>
+              </div>
+            `).join("");
+            node.appendChild(list);
+          }
+        });
+        return node;
+      }
+
+      function renderMarkdown(container, markdown) {
+        const normalized = String(markdown || "").replace(/\r\n/g, "\n");
+        const blocks = normalized.split(/\n{2,}/);
+        blocks.forEach((block) => {
+          if (!block) return;
+          const paragraph = document.createElement("p");
+          renderInline(paragraph, block);
+          container.appendChild(paragraph);
+        });
+      }
+
+      function renderInline(container, text) {
+        const pattern = /\[([^\]]+)\]\(([^)]+)\)|`([^`]+)`|((?:\.{1,2}\/|\/|~\/)?[A-Za-z0-9_.~/-]+\.(?:swift|mjs|js|ts|tsx|jsx|md|sh|py|json|yaml|yml|txt|html|css|rb|rs|go|toml|xml)(?::\d+)?)/g;
+        let cursor = 0;
+        let match;
+        while ((match = pattern.exec(text)) !== null) {
+          if (match.index > cursor) {
+            appendTextWithBreaks(container, text.slice(cursor, match.index));
+          }
+
+          if (match[1] && match[2]) {
+            appendFileButton(container, match[1], match[2]);
+          } else if (match[3]) {
+            const code = document.createElement("code");
+            code.textContent = match[3];
+            container.appendChild(code);
+          } else if (match[4]) {
+            appendFileButton(container, match[4], match[4]);
+          }
+          cursor = pattern.lastIndex;
+        }
+        if (cursor < text.length) {
+          appendTextWithBreaks(container, text.slice(cursor));
+        }
+      }
+
+      function appendTextWithBreaks(container, text) {
+        const pieces = text.split("\n");
+        pieces.forEach((piece, index) => {
+          if (index > 0) container.appendChild(document.createElement("br"));
+          if (piece) container.appendChild(document.createTextNode(piece));
+        });
+      }
+
+      function appendFileButton(container, label, path) {
+        const button = document.createElement("button");
+        button.className = "file-link";
+        button.type = "button";
+        button.dataset.path = path;
+        button.textContent = label;
+        button.addEventListener("click", () => openLinkedFile(path));
+        container.appendChild(button);
+      }
+
+      function renderFileGroup(part, chat, index) {
+        const key = `${chat.id}:${index}`;
+        const card = document.createElement("div");
+        card.className = `file-card ${collapsedFileGroups.has(key) ? "collapsed" : ""}`;
+        const added = part.files.reduce((total, file) => total + (file.added || 0), 0);
+        const removed = part.files.reduce((total, file) => total + (file.removed || 0), 0);
+
+        const header = document.createElement("button");
+        header.type = "button";
+        header.className = "file-card-header";
+        header.innerHTML = `
+          <strong>${part.files.length} files changed</strong>
+          <span class="counts"><span class="plus">+${added}</span><span class="minus">-${removed}</span>${icons.fileChevron}</span>
+        `;
+        header.addEventListener("click", () => {
+          if (collapsedFileGroups.has(key)) {
+            collapsedFileGroups.delete(key);
+          } else {
+            collapsedFileGroups.add(key);
+          }
+          renderChat();
+        });
+
+        const rows = document.createElement("div");
+        rows.className = "file-rows";
+        part.files.forEach((file) => {
+          const row = document.createElement("button");
+          row.type = "button";
+          row.className = "file-row";
+          row.innerHTML = `
+            <span class="file-path">${escapeHTML(shortPath(file.path))}</span>
+            <span class="counts"><span class="plus">+${file.added || 0}</span><span class="minus">-${file.removed || 0}</span></span>
+          `;
+          row.addEventListener("click", () => openFile(file));
+          rows.appendChild(row);
+        });
+
+        card.append(header, rows);
+        return card;
+      }
+
+      function renderSingleFile(file) {
+        const card = document.createElement("div");
+        card.className = "file-card";
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "file-row";
+        row.innerHTML = `
+          <span class="file-path">${escapeHTML(shortPath(file.path || "File"))}</span>
+          <span class="counts"><span class="plus">+${file.added || 0}</span><span class="minus">-${file.removed || 0}</span></span>
+        `;
+        row.addEventListener("click", () => openFile(file));
+        card.appendChild(row);
+        return card;
+      }
+
+      function shortPath(path) {
+        const text = String(path || "");
+        if (text.length <= 42) return text;
+        return `...${text.slice(-39)}`;
+      }
+
+      function openLinkedFile(rawPath) {
+        const path = decodeURIComponent(rawPath || "");
+        const chat = currentChat();
+        const messages = messagesFor(chat?.id);
+        const files = messages.flatMap((message) =>
+          message.parts.flatMap((part) => {
+            if (part.type === "fileGroup") return part.files || [];
+            if (part.type === "file") return [part];
+            return [];
+          })
+        );
+        const match = files.find((file) => file.path === path || file.path.endsWith(path) || path.endsWith(file.path));
+        openFile(match || {
+          path,
+          added: 0,
+          removed: 0,
+          diff: "",
+          content: "No preview was provided for this linked file yet."
+        });
+      }
+
+      function openFile(file) {
+        const path = file.path || "File";
+        state.screen = "file";
+        emitAction("openFile", { path });
+        renderFileSheet(file);
+        sheetBackdrop.classList.add("is-visible");
+        fileSheet.classList.add("is-visible");
+      }
+
+      function renderFileSheet(file) {
+        const path = file.path || "File";
+        sheetTitle.textContent = path.split("/").pop() || path;
+        sheetPath.textContent = path;
+        const unsupported = file.supported === false && !file.diff;
+        const preview = file.diff || file.content || file.detail || "No preview available.";
+        const editedCount = (file.added || 0) + (file.removed || 0);
+        const counts = (file.added || file.removed)
+          ? `<div class="diff-summary"><span class="plus">+${file.added || 0}</span><span class="minus">-${file.removed || 0}</span></div>`
+          : "";
+        const body = unsupported
+          ? `<p class="unsupported-preview">Preview is unavailable for this file type.</p>`
+          : editedCount > 5
+            ? counts
+            : `${counts}<pre class="preview-code">${escapeHTML(preview)}</pre>`;
+        sheetBody.innerHTML = body;
+      }
+
+      function renderSelectedFileSheet() {
+        if (!state.selectedFile || !fileSheet.classList.contains("is-visible")) return;
+        const visiblePath = sheetPath.textContent;
+        if (visiblePath && visiblePath !== state.selectedFile.path) return;
+        renderFileSheet(state.selectedFile);
+      }
+
+      function closeSheet() {
+        sheetBackdrop.classList.remove("is-visible");
+        fileSheet.classList.remove("is-visible");
+      }
+
+      function emitAction(action, payload = {}) {
+        const message = {
+          type: "codex:action",
+          action,
+          payload
+        };
+        window.parent?.postMessage(message, "*");
+        window.webkit?.messageHandlers?.codexDisplayAction?.postMessage(message);
+      }
+
+      function renderComposer() {
+        const streaming = currentChatIsStreaming();
+        const isRecording = state.pet.state === "recording";
+        const isExpanded = state.composerExpanded || isRecording;
+        composer.className = `composer ${isExpanded ? "expanded" : "collapsed"}`;
+        const voiceLabel = isRecording ? "Stop and preview" : "Dictate";
+        if (!isExpanded) {
+          composer.innerHTML = `
+            <button class="composer-icon" type="button" aria-label="Add attachment">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            </button>
+            <div class="composer-placeholder" id="composerPlaceholder" role="button" tabindex="0">Ask Codex</div>
+            <button class="composer-icon" type="button" data-action="voice-preview" aria-label="${voiceLabel}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v3"/></svg>
+            </button>
+          `;
+          return;
+        }
+
+        composer.innerHTML = `
+          ${isRecording
+            ? `<div class="recording-preview" id="recordingPreview">
+                <div class="recording-status">
+                  <span class="recording-dot" aria-hidden="true"></span>
+                  <span>Listening...</span>
+                </div>
+                <div class="preview-actions">
+                  <button class="primary" type="button" data-action="voice-preview">Stop and preview</button>
+                </div>
+              </div>`
+            : ""}
+          ${state.transcriptPreview
+            ? `<div class="transcript-preview is-visible" id="transcriptPreview">
+                <p>${escapeHTML(state.transcriptPreview)}</p>
+                <div class="preview-actions">
+                  <button class="primary" type="button" data-action="accept-transcript">Use</button>
+                  <button type="button" data-action="discard-transcript">Discard</button>
+                </div>
+              </div>`
+            : ""}
+          <textarea id="draftInput" rows="2" placeholder="Ask Codex">${escapeHTML(state.draft)}</textarea>
+          <div class="composer-actions">
+            <button class="composer-icon" type="button" aria-label="Add attachment">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            </button>
+            <button class="model-button" type="button" data-action="model-menu">${escapeHTML(selectedModelLabel())}</button>
+            <span style="flex: 1"></span>
+            <button class="composer-icon ${isRecording ? "is-recording" : ""}" type="button" data-action="voice-preview" aria-label="${voiceLabel}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v3"/></svg>
+            </button>
+            ${streaming
+              ? `<button class="stop-button" type="button" data-action="interrupt-turn" aria-label="Stop">${icons.stop}</button>`
+              : `<button class="send-button" type="button" data-action="send-draft" ${state.draft.trim() ? "" : "disabled"} aria-label="Send">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+                </button>`}
+          </div>
+        `;
+        const input = document.querySelector("#draftInput");
+        input?.addEventListener("input", (event) => {
+          state.draft = event.target.value;
+          emitAction("updateDraft", { text: state.draft });
+          const send = composer.querySelector("[data-action='send-draft']");
+          if (send) send.disabled = !state.draft.trim();
+        });
+        requestAnimationFrame(() => input?.focus());
+      }
+
+      function renderPet() {
+        const bubble = normalizePetBubble(state.pet.bubble || "");
+        const expanded = Boolean(state.petBubbleExpanded);
+        petBubble.hidden = !bubble;
+        petBubble.dataset.expanded = expanded ? "true" : "false";
+        petBubbleText.textContent = bubble;
+        petBubbleToggle.hidden = !isPetBubbleExpandable(bubble);
+        petBubbleToggle.textContent = expanded ? "Less" : "More";
+        const assetBase = window.CodexDisplayAssetBaseURL || "CodexRayBan/Assets.xcassets";
+        const asset = state.pet.imageURI || `${assetBase}/${state.pet.id}-spritesheet-v4.imageset/${state.pet.id}-spritesheet-v4.png`;
+        if (!petSprite.src.endsWith(asset)) {
+          petSprite.src = asset;
+        }
+      }
+
+      function normalizePetBubble(text) {
+        return String(text || "")
+          .replace(/\r\n/g, "\n")
+          .replace(/!\[([^\]]*)\]\([^)]+\)/g, "$1")
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+          .replace(/`([^`]+)`/g, "$1")
+          .replace(/\*\*([^*\n]+)\*\*/g, "$1")
+          .replace(/__([^_\n]+)__/g, "$1")
+          .replace(/~~([^~\n]+)~~/g, "$1")
+          .replace(/(^|\s)\*([^*\n]+)\*(?=\s|$)/g, "$1$2")
+          .trim();
+      }
+
+      function isPetBubbleExpandable(text) {
+        const lines = String(text || "").split("\n").map((line) => line.trim()).filter(Boolean);
+        return lines.length > 2 || String(text || "").length > 92;
+      }
+
+      function startPetAnimation() {
+        stopPetAnimation();
+        petFrameIndex = 0;
+        stepPetAnimation();
+      }
+
+      function stopPetAnimation() {
+        if (petTimer) clearTimeout(petTimer);
+        petTimer = null;
+      }
+
+      function stepPetAnimation() {
+        const frames = petAnimations[state.pet.state] || petAnimations.idle;
+        const frame = frames[petFrameIndex % frames.length];
+        petSprite.style.setProperty("--pet-row", frame[0]);
+        petSprite.style.setProperty("--pet-col", frame[1]);
+        petFrameIndex += 1;
+        petTimer = setTimeout(stepPetAnimation, frame[2]);
+      }
+
+      function sendDraft() {
+        const text = state.draft.trim();
+        if (!text) return;
+        let chat = currentChat();
+        if (!chat && !isNativeBridge()) {
+          const id = `chat-new-${Date.now()}`;
+          chat = {
+            id,
+            title: "New chat",
+            projectId: state.selectedProjectId || null,
+            projectName: selectedProject()?.name || "Project",
+            updated: "now",
+            unread: false,
+            active: false,
+            pinned: false
+          };
+          state.chats.unshift(chat);
+          state.messagesByChat[id] = [];
+          state.selectedChatId = id;
+        }
+        const projectId = chat?.projectId || state.selectedProjectId || null;
+        emitAction("sendMessage", {
+          chatId: chat?.id || null,
+          projectId,
+          text
+        });
+        state.draft = "";
+        state.transcriptPreview = "";
+        state.composerExpanded = false;
+        state.pet.state = "running";
+        state.pet.bubble = "Working.";
+        if (isNativeBridge()) {
+          render();
+          return;
+        }
+        const messages = messagesFor(chat.id);
+        messages.push({
+          id: `user-${Date.now()}`,
+          role: "user",
+          parts: [{ type: "text", text }]
+        });
+        messages.push({
+          id: `assistant-${Date.now()}`,
+          role: "assistant",
+          streaming: true,
+          parts: [
+            {
+              type: "text",
+              text: "Working on it."
+            }
+          ]
+        });
+        chat.active = true;
+        render();
+        setTimeout(() => {
+          const activeMessages = messagesFor(chat.id);
+          const last = activeMessages[activeMessages.length - 1];
+          if (last) {
+            last.streaming = false;
+            last.parts = [
+              {
+                type: "text",
+                text: "I have the message and the transport is ready for the native app to send it through the Codex websocket."
+              }
+            ];
+          }
+          chat.active = false;
+          state.pet.state = "review";
+          state.pet.bubble = "Done.";
+          render();
+        }, 1200);
+      }
+
+      function receiveMessage(payload) {
+        if (!payload || typeof payload !== "object") return;
+        if (payload.type === "set-theme") {
+          document.body.dataset.theme = payload.theme === "light" ? "light" : "dark";
+          return;
+        }
+        if (payload.type === "codex:set-state") {
+          mergeState(state, payload.state || {});
+          if (state.screen && screens[state.screen]) {
+            showScreen(state.screen);
+          }
+          render();
+          renderSelectedFileSheet();
+        }
+        if (payload.type === "codex:navigate") {
+          if (payload.chatId) state.selectedChatId = payload.chatId;
+          if (payload.projectId) state.selectedProjectId = payload.projectId;
+          showScreen(payload.screen || "home");
+          render();
+        }
+        if (payload.type === "codex:pet-state") {
+          mergeState(state.pet, payload.pet || {});
+          showScreen("pet");
+          render();
+        }
+        if (payload.type === "codex:transcript") {
+          state.transcriptPreview = String(payload.text || "");
+          state.composerExpanded = true;
+          showScreen("chat");
+          render();
+        }
+      }
+
+      function mergeState(target, incoming) {
+        const replaceObjectKeys = new Set(["messagesByChat"]);
+        Object.entries(incoming).forEach(([key, value]) => {
+          if (replaceObjectKeys.has(key)) {
+            target[key] = value;
+          } else if (value && typeof value === "object" && !Array.isArray(value) && target[key] && typeof target[key] === "object" && !Array.isArray(target[key])) {
+            mergeState(target[key], value);
+          } else {
+            target[key] = value;
+          }
+        });
+      }
+
+      document.addEventListener("click", (event) => {
+        const actionNode = event.target.closest("[data-action]");
+        if (actionNode) {
+          handleAction(actionNode.dataset.action, actionNode);
+          return;
+        }
+
+        const projectButton = event.target.closest("[data-project-id]");
+        if (projectButton) {
+          state.selectedProjectId = projectButton.dataset.projectId;
+          state.screen = "project";
+          emitAction("openProject", { projectId: state.selectedProjectId });
+          showScreen("project");
+          render();
+          return;
+        }
+
+        const chatButton = event.target.closest("[data-chat-id]");
+        if (chatButton) {
+          state.selectedChatId = chatButton.dataset.chatId;
+          state.screen = "chat";
+          emitAction("openChat", { chatId: state.selectedChatId });
+          state.chats.forEach((chat) => {
+            if (chat.id === state.selectedChatId) chat.unread = false;
+          });
+          showScreen("chat");
+          render();
+          return;
+        }
+      });
+
+      function cycleModel() {
+        if (!state.models.length) return;
+        const currentIndex = Math.max(0, state.models.findIndex((model) => model.id === state.selectedModelId));
+        const next = state.models[(currentIndex + 1) % state.models.length];
+        state.selectedModelId = next.id;
+        emitAction("setModel", { modelId: next.id });
+        renderComposer();
+      }
+
+      function chatForAction(actionNode) {
+        const id = actionNode.dataset.chatActionId || currentChat()?.id;
+        return state.chats.find((chat) => chat.id === id) || null;
+      }
+
+      function handleAction(action, actionNode) {
+        if (action === "show-pet") {
+          state.mode = "pet";
+          state.screen = "pet";
+          state.petBubbleExpanded = false;
+          emitAction("setMode", { mode: "pet" });
+          showScreen("pet");
+          render();
+        } else if (action === "toggle-pet-bubble") {
+          state.petBubbleExpanded = !state.petBubbleExpanded;
+          emitAction("setPetBubbleExpanded", { petBubbleExpanded: state.petBubbleExpanded });
+          renderPet();
+        } else if (action === "show-work") {
+          state.mode = "work";
+          state.screen = previousScreen === "pet" ? "home" : previousScreen;
+          emitAction("setMode", { mode: "work" });
+          emitAction("setScreen", { screen: previousScreen === "pet" ? "home" : previousScreen });
+          showScreen(previousScreen === "pet" ? "home" : previousScreen);
+          render();
+        } else if (action === "back-home") {
+          state.screen = "home";
+          emitAction("setScreen", { screen: "home" });
+          showScreen("home");
+        } else if (action === "back-from-chat") {
+          const chat = currentChat();
+          state.screen = chat?.projectId ? "project" : "home";
+          emitAction("setScreen", { screen: chat?.projectId ? "project" : "home" });
+          showScreen(chat?.projectId ? "project" : "home");
+        } else if (action === "toggle-chats") {
+          state.showAllChats = !state.showAllChats;
+          emitAction("setShowAllChats", { showAllChats: state.showAllChats });
+          renderHome();
+        } else if (action === "toggle-pinned") {
+          state.showAllPinnedChats = !state.showAllPinnedChats;
+          emitAction("setShowAllPinnedChats", { showAllPinnedChats: state.showAllPinnedChats });
+          renderHome();
+        } else if (action === "toggle-projects") {
+          state.showAllProjects = !state.showAllProjects;
+          emitAction("setShowAllProjects", { showAllProjects: state.showAllProjects });
+          renderHome();
+        } else if (action === "toggle-project-chats") {
+          state.showAllProjectChats = !state.showAllProjectChats;
+          emitAction("setShowAllProjectChats", { showAllProjectChats: state.showAllProjectChats });
+          renderProject();
+        } else if (action === "new-chat") {
+          emitAction("newChat", { projectId: state.selectedProjectId || null });
+          if (!isNativeBridge()) {
+            const id = `chat-new-${Date.now()}`;
+            state.chats.unshift({
+              id,
+              title: "New chat",
+              projectId: state.selectedProjectId,
+              projectName: selectedProject()?.name || "Project",
+              updated: "now",
+              unread: false,
+              active: false,
+              pinned: false
+            });
+            state.messagesByChat[id] = [];
+            state.selectedChatId = id;
+          } else {
+            state.selectedChatId = null;
+          }
+          state.screen = "chat";
+          state.draft = "";
+          state.composerExpanded = true;
+          showScreen("chat");
+          render();
+        } else if (action === "voice-preview") {
+          const wasRecording = state.pet.state === "recording";
+          emitAction("startTranscription", { chatId: state.selectedChatId || null });
+          state.composerExpanded = true;
+          if (wasRecording) {
+            state.pet.state = "idle";
+            state.pet.bubble = "Ready.";
+          } else {
+            state.pet.state = "recording";
+            state.pet.bubble = "Listening.";
+            state.transcriptPreview = "";
+          }
+          if (wasRecording && !window.CodexDisplayNativeBridge) {
+            state.transcriptPreview = "Check the current run, summarize the diff, and tell me what to do next.";
+          }
+          render();
+        } else if (action === "accept-transcript") {
+          emitAction("acceptTranscript", { text: state.transcriptPreview });
+          state.draft = state.draft ? `${state.draft} ${state.transcriptPreview}` : state.transcriptPreview;
+          state.transcriptPreview = "";
+          state.pet.state = "idle";
+          state.pet.bubble = "Ready.";
+          renderComposer();
+        } else if (action === "discard-transcript") {
+          emitAction("discardTranscript", {});
+          state.transcriptPreview = "";
+          state.pet.state = "idle";
+          state.pet.bubble = "Ready.";
+          renderComposer();
+        } else if (action === "send-draft") {
+          sendDraft();
+        } else if (action === "close-sheet") {
+          closeSheet();
+        } else if (action === "load-older") {
+          emitAction("loadOlderTurns", { chatId: state.selectedChatId || null });
+          state.hasOlderMessages = false;
+          renderChat();
+        } else if (action === "interrupt-turn") {
+          emitAction("interruptTurn", { chatId: state.selectedChatId || null });
+          const chat = currentChat();
+          if (chat) chat.active = false;
+          messagesFor(chat?.id).forEach((message) => {
+            message.streaming = false;
+          });
+          state.pet.state = "review";
+          state.pet.bubble = "Stopped.";
+          render();
+        } else if (action === "toggle-pin") {
+          const chat = chatForAction(actionNode);
+          if (!chat) return;
+          chat.pinned = !chat.pinned;
+          emitAction("togglePinned", { chatId: chat.id });
+          render();
+        } else if (action === "archive-chat") {
+          const chat = chatForAction(actionNode);
+          if (!chat) return;
+          emitAction("archiveChat", { chatId: chat.id });
+          state.chats = state.chats.filter((candidate) => candidate.id !== chat.id);
+          if (state.selectedChatId === chat.id) {
+            state.selectedChatId = null;
+            showScreen("home");
+          }
+          render();
+        } else if (action === "model-menu") {
+          cycleModel();
+        }
+      }
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          if (fileSheet.classList.contains("is-visible")) closeSheet();
+          else if (currentScreen === "pet") showScreen("home");
+        }
+      });
+
+      composer.addEventListener("click", (event) => {
+        if (!state.composerExpanded && !event.target.closest("[data-action='voice-preview']")) {
+          state.composerExpanded = true;
+          emitAction("setComposerExpanded", { expanded: true });
+          renderComposer();
+        }
+      });
+
+      sheetBackdrop.addEventListener("click", closeSheet);
+
+      window.addEventListener("message", (event) => {
+        receiveMessage(event.data);
+      });
+
+      window.CodexDisplayApp = {
+        state,
+        setState(nextState) {
+          mergeState(state, nextState || {});
+          render();
+        },
+        openChat(chatId) {
+          state.selectedChatId = chatId;
+          showScreen("chat");
+          render();
+        },
+        showPet(pet) {
+          mergeState(state.pet, pet || {});
+          showScreen("pet");
+          render();
+        },
+        showFile: openFile
+      };
+
+      render();
+      showScreen("home");
+    </script>
+  </body>
+</html>

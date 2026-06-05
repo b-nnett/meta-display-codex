@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Codex Meta Display Emulator</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root {
+        color-scheme: light;
+        --zoom: 1;
+        --display-size: 600px;
+        --bg: #8b929b;
+        --panel: #d4d7dc;
+        --panel-strong: #c5c9d0;
+        --text: #151a20;
+        --muted: #5b6673;
+        --line: #747b84;
+        --accent: #215f59;
+        --toolbar: #969ca4;
+        --display-edge: #747b84;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      .emulator {
+        height: 100vh;
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: auto 1fr;
+      }
+
+      .toolbar {
+        min-height: 76px;
+        display: grid;
+        grid-template-columns: 1fr minmax(320px, 560px) 1fr;
+        align-items: center;
+        gap: 24px;
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--line);
+        background: var(--toolbar);
+      }
+
+      .title {
+        display: grid;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 19px;
+        line-height: 1.2;
+      }
+
+      .controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .url-form {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(180px, 1fr) auto;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .url-form label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .url-form input,
+      .url-form button {
+        height: 38px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font: inherit;
+      }
+
+      .url-form input {
+        min-width: 0;
+        padding: 0 12px;
+        background: var(--panel);
+        color: var(--text);
+      }
+
+      .url-form button {
+        padding: 0 16px;
+        background: var(--panel-strong);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .url-form button:hover {
+        border-color: var(--accent);
+      }
+
+      .theme-toggle {
+        justify-self: end;
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--panel-strong);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .theme-toggle:hover {
+        border-color: var(--accent);
+      }
+
+      .theme-toggle svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .theme-toggle .moon-icon {
+        display: none;
+      }
+
+      .theme-toggle[data-app-theme="light"] .moon-icon {
+        display: block;
+      }
+
+      .theme-toggle[data-app-theme="light"] .sun-icon {
+        display: none;
+      }
+
+      .stage {
+        min-height: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px 24px 78px;
+        overflow: auto;
+      }
+
+      .display-scale {
+        width: var(--display-size);
+        height: var(--display-size);
+        display: grid;
+        place-items: center;
+      }
+
+      .display-shell {
+        width: var(--display-size);
+        height: var(--display-size);
+        position: relative;
+        overflow: hidden;
+        outline: 1px solid var(--display-edge);
+        border-radius: 0;
+        background: #777d86;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.45);
+      }
+
+      .display-frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 600px;
+        height: 600px;
+        border: 0;
+        background: #000;
+        transform: scale(var(--zoom));
+        transform-origin: top left;
+      }
+
+      .zoom-pill {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(212, 215, 220, 0.92);
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.24);
+        transform: translateX(-50%);
+      }
+
+      .zoom-pill button {
+        width: 34px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--text);
+        font: inherit;
+        font-size: 16px;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .zoom-pill button:hover {
+        background: var(--panel-strong);
+      }
+
+      .zoom-pill button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      @media (max-width: 760px) {
+        .toolbar {
+          align-items: stretch;
+          grid-template-columns: 1fr auto;
+        }
+
+        .controls {
+          grid-column: 1 / -1;
+          order: 2;
+        }
+
+        .url-form {
+          grid-template-columns: 1fr auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="emulator">
+      <header class="toolbar" aria-label="Emulator controls">
+        <div class="title">
+          <h1>Meta Ray-Ban Display</h1>
+        </div>
+
+        <div class="controls">
+          <form class="url-form" id="urlForm">
+            <label for="appUrl">App URL</label>
+            <input
+              id="appUrl"
+              name="appUrl"
+              type="text"
+              value=""
+              placeholder="https://example.com/app or leave blank for Codex"
+            />
+            <button type="submit">Load</button>
+          </form>
+
+        </div>
+
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          type="button"
+          data-app-theme="dark"
+          aria-label="Switch to light mode"
+          title="Switch theme"
+        >
+          <svg
+            class="moon-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 3a6 6 0 0 0 9 7.4A9 9 0 1 1 12 3Z" />
+          </svg>
+          <svg
+            class="sun-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2" />
+            <path d="M12 20v2" />
+            <path d="m4.93 4.93 1.41 1.41" />
+            <path d="m17.66 17.66 1.41 1.41" />
+            <path d="M2 12h2" />
+            <path d="M20 12h2" />
+            <path d="m6.34 17.66-1.41 1.41" />
+            <path d="m19.07 4.93-1.41 1.41" />
+          </svg>
+        </button>
+      </header>
+
+      <section class="stage" aria-label="Display emulator viewport">
+        <div class="display-scale">
+          <div class="display-shell">
+            <iframe
+              id="displayFrame"
+              class="display-frame"
+              title="Meta display app preview"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <nav class="zoom-pill" aria-label="Display zoom controls">
+        <button type="button" data-zoom-action="reset" aria-label="Actual size">
+          1
+        </button>
+        <button type="button" data-zoom-action="out" aria-label="Zoom out">
+          -
+        </button>
+        <button type="button" data-zoom-action="in" aria-label="Zoom in">
+          +
+        </button>
+      </nav>
+    </main>
+
+    <script>
+      const form = document.querySelector("#urlForm");
+      const input = document.querySelector("#appUrl");
+      const frame = document.querySelector("#displayFrame");
+      const themeToggle = document.querySelector("#themeToggle");
+      const zoomControls = document.querySelector(".zoom-pill");
+      let appTheme = "dark";
+      let zoom = 1;
+      const baseDisplaySize = 600;
+
+      function applyZoom() {
+        document.documentElement.style.setProperty("--zoom", zoom.toFixed(2));
+        document.documentElement.style.setProperty(
+          "--display-size",
+          `${Math.round(baseDisplaySize * zoom)}px`,
+        );
+      }
+      function loadDemo() {
+        frame.removeAttribute("srcdoc");
+        frame.src = "codex-display-app.html";
+        frame.addEventListener(
+          "load",
+          () => {
+            sendAppTheme();
+          },
+          { once: true },
+        );
+      }
+
+      function sendAppTheme() {
+        frame.contentWindow?.postMessage(
+          { type: "set-theme", theme: appTheme },
+          "*",
+        );
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const url = input.value.trim();
+
+        if (!url) {
+          loadDemo();
+          return;
+        }
+
+        frame.removeAttribute("srcdoc");
+        frame.src = url;
+      });
+
+      themeToggle.addEventListener("click", () => {
+        appTheme = appTheme === "light" ? "dark" : "light";
+        themeToggle.dataset.appTheme = appTheme;
+        themeToggle.setAttribute(
+          "aria-label",
+          appTheme === "light" ? "Switch app to dark mode" : "Switch app to light mode",
+        );
+        sendAppTheme();
+      });
+
+      zoomControls.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        if (button.dataset.zoomAction === "reset") {
+          zoom = 1;
+        } else if (button.dataset.zoomAction === "out") {
+          zoom = Math.max(0.5, zoom - 0.1);
+        } else if (button.dataset.zoomAction === "in") {
+          zoom = Math.min(2, zoom + 0.1);
+        }
+
+        applyZoom();
+      });
+
+      applyZoom();
+      loadDemo();
+    </script>
+  </body>
+</html>

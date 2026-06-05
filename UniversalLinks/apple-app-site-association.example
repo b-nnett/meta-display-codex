@@ -1,0 +1,22 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": [
+          "TEAMID.com.example.codexrayban"
+        ],
+        "components": [
+          {
+            "/": "/oauth/callback",
+            "comment": "Codex OAuth callback"
+          },
+          {
+            "/": "/auth/*",
+            "comment": "Future auth routes"
+          }
+        ]
+      }
+    ]
+  }
+}

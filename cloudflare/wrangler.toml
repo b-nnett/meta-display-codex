@@ -1,0 +1,8 @@
+name = "codex-rayban-aasa"
+main = "aasa-worker.js"
+compatibility_date = "2026-06-04"
+
+routes = [
+  { pattern = "example.com/.well-known/apple-app-site-association", zone_name = "example.com" },
+  { pattern = "example.com/codex-pets/*", zone_name = "example.com" }
+]

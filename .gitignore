@@ -1,0 +1,30 @@
+.DS_Store
+
+# Xcode user state
+*.xcuserstate
+xcuserdata/
+DerivedData/
+
+# Local build products
+build/
+BandBridgeMac/build/
+
+# Local private AirShield identity exports
+reverse/identity-imports/
+
+# Local/generated investigation artifacts
+.playwright-cli/
+output/
+reverse/
+screenshots/
+firmware/
+pulled-apks/
+
+# SwiftPM/Xcode generated package state
+.build/
+.swiftpm/
+Package.resolved
+
+# Cloudflare local cache
+.wrangler/
+cloudflare/.wrangler/

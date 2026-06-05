@@ -1,0 +1,639 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DB01000000000001 /* CodexRayBanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000002 /* CodexRayBanApp.swift */; };
+		DB01000000000002 /* CodexDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000003 /* CodexDisplay.swift */; };
+		DB01000000000003 /* DisplayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000004 /* DisplayViewModel.swift */; };
+		DB01000000000004 /* WearablesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000005 /* WearablesViewModel.swift */; };
+		DB01000000000005 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000006 /* RegistrationView.swift */; };
+		DB01000000000006 /* CodexHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000007 /* CodexHomeView.swift */; };
+		DB01000000000007 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000008 /* SettingsView.swift */; };
+		DB01000000000008 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB02000000000009 /* Assets.xcassets */; };
+		DB01000000000009 /* MWDATCore in Frameworks */ = {isa = PBXBuildFile; productRef = DB0A000000000001 /* MWDATCore */; };
+		DB0100000000000A /* MWDATDisplay in Frameworks */ = {isa = PBXBuildFile; productRef = DB0A000000000002 /* MWDATDisplay */; };
+		DB0100000000000B /* CodexOAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000000C /* CodexOAuth.swift */; };
+		DB0100000000000C /* CodexSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000000D /* CodexSecurity.swift */; };
+		DB0100000000000D /* CodexRemoteClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000000E /* CodexRemoteClient.swift */; };
+		DB0100000000000E /* CodexAuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000000F /* CodexAuthViewModel.swift */; };
+		DB0100000000000F /* CodexOAuthSessionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000010 /* CodexOAuthSessionPresenter.swift */; };
+		DB01000000000010 /* CodexWorkspaceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000011 /* CodexWorkspaceViewModel.swift */; };
+		DB01000000000011 /* CodexRemoteAPICatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000012 /* CodexRemoteAPICatalog.swift */; };
+		DB01000000000012 /* CodexRemoteAPICatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000014 /* CodexRemoteAPICatalogTests.swift */; };
+		DB01000000000013 /* CodexPetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000015 /* CodexPetModel.swift */; };
+		DB01000000000014 /* CodexTranscriptionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000016 /* CodexTranscriptionViewModel.swift */; };
+		DB01000000000015 /* CodexPetVideoRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000017 /* CodexPetVideoRenderer.swift */; };
+		DB01000000000016 /* CodexDeviceSnapshotWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000018 /* CodexDeviceSnapshotWriter.swift */; };
+		DB01000000000017 /* CodexDisplayAppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB02000000000019 /* CodexDisplayAppState.swift */; };
+		DB01000000000018 /* CodexDisplayAppBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000001A /* CodexDisplayAppBridge.swift */; };
+		DB01000000000019 /* CodexDisplayAppHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000001B /* CodexDisplayAppHostView.swift */; };
+		DB0100000000001A /* codex-display-app.html in Resources */ = {isa = PBXBuildFile; fileRef = DB0200000000001C /* codex-display-app.html */; };
+		DB0100000000001B /* CodexDisplayAppGlasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000001D /* CodexDisplayAppGlasses.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DB0B000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB08000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DB04000000000001;
+			remoteInfo = CodexRayBan;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DB05000000000004 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		DB02000000000001 /* CodexRayBan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodexRayBan.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB02000000000002 /* CodexRayBanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexRayBanApp.swift; sourceTree = "<group>"; };
+		DB02000000000003 /* CodexDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexDisplay.swift; sourceTree = "<group>"; };
+		DB02000000000004 /* DisplayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayViewModel.swift; sourceTree = "<group>"; };
+		DB02000000000005 /* WearablesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WearablesViewModel.swift; sourceTree = "<group>"; };
+		DB02000000000006 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
+		DB02000000000007 /* CodexHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexHomeView.swift; sourceTree = "<group>"; };
+		DB02000000000008 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		DB02000000000009 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DB0200000000000A /* CodexRayBan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CodexRayBan.entitlements; sourceTree = "<group>"; };
+		DB0200000000000B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DB0200000000000C /* CodexOAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexOAuth.swift; sourceTree = "<group>"; };
+		DB0200000000000D /* CodexSecurity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexSecurity.swift; sourceTree = "<group>"; };
+		DB0200000000000E /* CodexRemoteClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexRemoteClient.swift; sourceTree = "<group>"; };
+		DB0200000000000F /* CodexAuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexAuthViewModel.swift; sourceTree = "<group>"; };
+		DB02000000000010 /* CodexOAuthSessionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexOAuthSessionPresenter.swift; sourceTree = "<group>"; };
+		DB02000000000011 /* CodexWorkspaceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexWorkspaceViewModel.swift; sourceTree = "<group>"; };
+		DB02000000000012 /* CodexRemoteAPICatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexRemoteAPICatalog.swift; sourceTree = "<group>"; };
+		DB02000000000013 /* CodexRayBanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodexRayBanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB02000000000014 /* CodexRemoteAPICatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexRemoteAPICatalogTests.swift; sourceTree = "<group>"; };
+		DB02000000000015 /* CodexPetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexPetModel.swift; sourceTree = "<group>"; };
+		DB02000000000016 /* CodexTranscriptionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexTranscriptionViewModel.swift; sourceTree = "<group>"; };
+		DB02000000000017 /* CodexPetVideoRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexPetVideoRenderer.swift; sourceTree = "<group>"; };
+		DB02000000000018 /* CodexDeviceSnapshotWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexDeviceSnapshotWriter.swift; sourceTree = "<group>"; };
+		DB02000000000019 /* CodexDisplayAppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexDisplayAppState.swift; sourceTree = "<group>"; };
+		DB0200000000001A /* CodexDisplayAppBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexDisplayAppBridge.swift; sourceTree = "<group>"; };
+		DB0200000000001B /* CodexDisplayAppHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexDisplayAppHostView.swift; sourceTree = "<group>"; };
+		DB0200000000001C /* codex-display-app.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "codex-display-app.html"; sourceTree = "<group>"; };
+		DB0200000000001D /* CodexDisplayAppGlasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexDisplayAppGlasses.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DB05000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB01000000000009 /* MWDATCore in Frameworks */,
+				DB0100000000000A /* MWDATDisplay in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB05000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DB03000000000001 = {
+			isa = PBXGroup;
+			children = (
+				DB0200000000001C /* codex-display-app.html */,
+				DB03000000000003 /* CodexRayBan */,
+				DB03000000000008 /* CodexRayBanTests */,
+				DB03000000000002 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DB03000000000002 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DB02000000000001 /* CodexRayBan.app */,
+				DB02000000000013 /* CodexRayBanTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DB03000000000003 /* CodexRayBan */ = {
+			isa = PBXGroup;
+			children = (
+				DB03000000000007 /* Remote */,
+				DB03000000000004 /* Samples */,
+				DB03000000000005 /* ViewModels */,
+				DB03000000000006 /* Views */,
+				DB02000000000009 /* Assets.xcassets */,
+				DB0200000000000A /* CodexRayBan.entitlements */,
+				DB02000000000002 /* CodexRayBanApp.swift */,
+				DB0200000000000B /* Info.plist */,
+			);
+			path = CodexRayBan;
+			sourceTree = "<group>";
+		};
+		DB03000000000004 /* Samples */ = {
+			isa = PBXGroup;
+			children = (
+				DB02000000000003 /* CodexDisplay.swift */,
+				DB0200000000001D /* CodexDisplayAppGlasses.swift */,
+			);
+			path = Samples;
+			sourceTree = "<group>";
+		};
+		DB03000000000005 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				DB0200000000000F /* CodexAuthViewModel.swift */,
+				DB02000000000011 /* CodexWorkspaceViewModel.swift */,
+				DB02000000000015 /* CodexPetModel.swift */,
+				DB02000000000017 /* CodexPetVideoRenderer.swift */,
+				DB02000000000018 /* CodexDeviceSnapshotWriter.swift */,
+				DB02000000000019 /* CodexDisplayAppState.swift */,
+				DB0200000000001A /* CodexDisplayAppBridge.swift */,
+				DB02000000000016 /* CodexTranscriptionViewModel.swift */,
+				DB0200000000000E /* CodexRemoteClient.swift */,
+				DB0200000000000C /* CodexOAuth.swift */,
+				DB0200000000000D /* CodexSecurity.swift */,
+				DB02000000000004 /* DisplayViewModel.swift */,
+				DB02000000000005 /* WearablesViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		DB03000000000006 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				DB02000000000006 /* RegistrationView.swift */,
+				DB02000000000007 /* CodexHomeView.swift */,
+				DB0200000000001B /* CodexDisplayAppHostView.swift */,
+				DB02000000000008 /* SettingsView.swift */,
+				DB02000000000010 /* CodexOAuthSessionPresenter.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		DB03000000000007 /* Remote */ = {
+			isa = PBXGroup;
+			children = (
+				DB02000000000012 /* CodexRemoteAPICatalog.swift */,
+			);
+			path = Remote;
+			sourceTree = "<group>";
+		};
+		DB03000000000008 /* CodexRayBanTests */ = {
+			isa = PBXGroup;
+			children = (
+				DB02000000000014 /* CodexRemoteAPICatalogTests.swift */,
+			);
+			path = CodexRayBanTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DB04000000000001 /* CodexRayBan */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB07000000000001 /* Build configuration list for PBXNativeTarget "CodexRayBan" */;
+			buildPhases = (
+				DB05000000000001 /* Sources */,
+				DB05000000000002 /* Frameworks */,
+				DB05000000000003 /* Resources */,
+				DB05000000000004 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CodexRayBan;
+			packageProductDependencies = (
+				DB0A000000000001 /* MWDATCore */,
+				DB0A000000000002 /* MWDATDisplay */,
+			);
+			productName = CodexRayBan;
+			productReference = DB02000000000001 /* CodexRayBan.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DB04000000000002 /* CodexRayBanTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB07000000000003 /* Build configuration list for PBXNativeTarget "CodexRayBanTests" */;
+			buildPhases = (
+				DB05000000000005 /* Sources */,
+				DB05000000000006 /* Frameworks */,
+				DB05000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DB0C000000000001 /* PBXTargetDependency */,
+			);
+			name = CodexRayBanTests;
+			packageProductDependencies = (
+			);
+			productName = CodexRayBanTests;
+			productReference = DB02000000000013 /* CodexRayBanTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DB08000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 2620;
+				LastUpgradeCheck = 1250;
+				TargetAttributes = {
+					DB04000000000001 = {
+						CreatedOnToolsVersion = 12.5;
+					};
+					DB04000000000002 = {
+						CreatedOnToolsVersion = 17.0;
+						TestTargetID = DB04000000000001;
+					};
+				};
+			};
+			buildConfigurationList = DB07000000000002 /* Build configuration list for PBXProject "CodexRayBan" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DB03000000000001;
+			packageReferences = (
+				DB09000000000001 /* XCRemoteSwiftPackageReference "meta-wearables-dat-ios" */,
+			);
+			productRefGroup = DB03000000000002 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DB04000000000001 /* CodexRayBan */,
+				DB04000000000002 /* CodexRayBanTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DB05000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB01000000000008 /* Assets.xcassets in Resources */,
+				DB0100000000001A /* codex-display-app.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB05000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DB05000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB01000000000001 /* CodexRayBanApp.swift in Sources */,
+				DB01000000000002 /* CodexDisplay.swift in Sources */,
+				DB01000000000003 /* DisplayViewModel.swift in Sources */,
+				DB01000000000004 /* WearablesViewModel.swift in Sources */,
+				DB01000000000005 /* RegistrationView.swift in Sources */,
+				DB01000000000006 /* CodexHomeView.swift in Sources */,
+				DB01000000000019 /* CodexDisplayAppHostView.swift in Sources */,
+				DB01000000000007 /* SettingsView.swift in Sources */,
+				DB0100000000000B /* CodexOAuth.swift in Sources */,
+				DB0100000000000C /* CodexSecurity.swift in Sources */,
+				DB0100000000000D /* CodexRemoteClient.swift in Sources */,
+				DB0100000000000E /* CodexAuthViewModel.swift in Sources */,
+				DB0100000000000F /* CodexOAuthSessionPresenter.swift in Sources */,
+				DB01000000000010 /* CodexWorkspaceViewModel.swift in Sources */,
+				DB01000000000011 /* CodexRemoteAPICatalog.swift in Sources */,
+				DB01000000000013 /* CodexPetModel.swift in Sources */,
+				DB01000000000014 /* CodexTranscriptionViewModel.swift in Sources */,
+				DB01000000000015 /* CodexPetVideoRenderer.swift in Sources */,
+				DB01000000000016 /* CodexDeviceSnapshotWriter.swift in Sources */,
+				DB01000000000017 /* CodexDisplayAppState.swift in Sources */,
+				DB01000000000018 /* CodexDisplayAppBridge.swift in Sources */,
+				DB0100000000001B /* CodexDisplayAppGlasses.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB05000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB01000000000012 /* CodexRemoteAPICatalogTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DB0C000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DB04000000000001 /* CodexRayBan */;
+			targetProxy = DB0B000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		DB06000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CodexRayBan/CodexRayBan.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CODEX_OAUTH_CLIENT_ID = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
+				INFOPLIST_FILE = CodexRayBan/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MWDAT_CLIENT_TOKEN = "";
+				MWDAT_META_APP_ID = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.codexrayban;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DB06000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CodexRayBan/CodexRayBan.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CODEX_OAUTH_CLIENT_ID = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = CodexRayBan/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MWDAT_CLIENT_TOKEN = "";
+				MWDAT_META_APP_ID = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.codexrayban;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		DB06000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DB06000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DB06000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.codexrayban.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CodexRayBan.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CodexRayBan";
+			};
+			name = Debug;
+		};
+		DB06000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.codexrayban.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CodexRayBan.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CodexRayBan";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DB07000000000001 /* Build configuration list for PBXNativeTarget "CodexRayBan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB06000000000001 /* Debug */,
+				DB06000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DB07000000000002 /* Build configuration list for PBXProject "CodexRayBan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB06000000000003 /* Debug */,
+				DB06000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DB07000000000003 /* Build configuration list for PBXNativeTarget "CodexRayBanTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB06000000000005 /* Debug */,
+				DB06000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DB09000000000001 /* XCRemoteSwiftPackageReference "meta-wearables-dat-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/facebook/meta-wearables-dat-ios";
+			requirement = {
+				kind = exactVersion;
+				version = 0.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DB0A000000000001 /* MWDATCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB09000000000001 /* XCRemoteSwiftPackageReference "meta-wearables-dat-ios" */;
+			productName = MWDATCore;
+		};
+		DB0A000000000002 /* MWDATDisplay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB09000000000001 /* XCRemoteSwiftPackageReference "meta-wearables-dat-ios" */;
+			productName = MWDATDisplay;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = DB08000000000001 /* Project object */;
+}
